@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcador de Voleibol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+        }
+        .score-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: blue; /* Color azul para el equipo local */
+            color: white;
+            position: relative;
+        }
+        #visitor-container {
+            background-color: red; /* Color rojo para el equipo visitante */
+        }
+        .score {
+            font-size: 72px; /* Tamaño de fuente grande */
+            font-family: 'Courier New', monospace; /* Tipo de fuente similar a los relojes digitales */
+            width: 80%;
+            text-align: center;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+        }
+        .button {
+            font-size: 32px;
+            cursor: pointer;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px; /* Espacio horizontal entre botones */
+        }
+        .score-label {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="local-container" class="score-container">
+        <div class="score" id="local-score">0</div>
+        <div class="score-label">Local</div>
+        <div class="buttons">
+            <span class="button" id="local-decrease">-</span>
+            <span class="button" id="local-increase">+</span>
+        </div>
+    </div>
+    <div id="visitor-container" class="score-container">
+        <div class="score" id="visitor-score">0</div>
+        <div class="score-label">Visitante</div>
+        <div class="buttons">
+            <span class="button" id="visitor-decrease">-</span>
+            <span class="button" id="visitor-increase">+</span>
+        </div>
+    </div>
+
+    <script>
+        const localScoreElement = document.getElementById('local-score');
+        const visitorScoreElement = document.getElementById('visitor-score');
+        const localIncreaseButton = document.getElementById('local-increase');
+        const localDecreaseButton = document.getElementById('local-decrease');
+        const visitorIncreaseButton = document.getElementById('visitor-increase');
+        const visitorDecreaseButton = document.getElementById('visitor-decrease');
+
+        let localScore = 0;
+        let visitorScore = 0;
+
+        // Función para actualizar el marcador local
+        function updateLocalScore() {
+            localScore++;
+            localScoreElement.textContent = localScore;
+        }
+
+        // Función para actualizar el marcador visitante
+        function updateVisitorScore() {
+            visitorScore++;
+            visitorScoreElement.textContent = visitorScore;
+        }
+
+        // Event listeners para los botones
+        localIncreaseButton.addEventListener('click', updateLocalScore);
+        localDecreaseButton.addEventListener('click', () => {
+            if (localScore > 0) {
+                localScore--;
+                localScoreElement.textContent = localScore;
+            }
+        });
+
+        visitorIncreaseButton.addEventListener('click', updateVisitorScore);
+        visitorDecreaseButton.addEventListener('click', () => {
+            if (visitorScore > 0) {
+                visitorScore--;
+                visitorScoreElement.textContent = visitorScore;
+            }
+        });
+    </script>
+</body>
+</html>
