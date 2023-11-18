@@ -9,10 +9,11 @@
             font-family: Arial, sans-serif;
             text-align: center;
             display: flex;
-            flex-direction: row;
-            justify-content: space-around;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .score-container {
             width: 50%;
@@ -21,17 +22,20 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
+        }
+        #local-container {
             background-color: blue; /* Color azul para el equipo local */
             color: white;
-            position: relative;
         }
         #visitor-container {
             background-color: red; /* Color rojo para el equipo visitante */
+            color: white;
         }
         .score {
             font-size: 72px; /* Tamaño de fuente grande */
             font-family: 'Courier New', monospace; /* Tipo de fuente similar a los relojes digitales */
-            width: 80%;
+            width: 100%;
             text-align: center;
         }
         .buttons {
@@ -57,21 +61,65 @@
         }
         .score-label {
             font-size: 24px;
+            margin-top: 10px;
+        }
+        .menu-bar {
+            width: 100%;
+            background-color: #333; /* Fondo oscuro para la barra de menú */
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .menu-button {
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #555; /* Color de fondo más oscuro para los botones de menú */
+        }
+        .timer {
+            font-size: 18px;
+            color: white;
+            background-color: #555; /* Color de fondo más oscuro para el temporizador */
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+        .customize-button {
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #555; /* Color de fondo más oscuro para el botón de personalización */
+        }
+        .layout-button {
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #555; /* Color de fondo más oscuro para el botón de disposición */
         }
     </style>
 </head>
 <body>
-    <div id="local-container" class="score-container">
+    <div class="menu-bar">
+        <div class="menu-button" id="change-set">Cambiar de Set</div>
+        <div class="timer" id="set-timer">Tiempo de Set: 0 minutos</div>
+        <div class="menu-button customize-button" id="customize">Personalizar</div>
+        <div class="menu-button layout-button" id="change-layout">Cambiar Disposición</div>
+    </div>
+    <div class="score-container" id="local-container">
         <div class="score" id="local-score">0</div>
-        <div class="score-label">Local</div>
+        <div class="score-label" id="local-label">Local</div>
         <div class="buttons">
             <span class="button" id="local-decrease">-</span>
             <span class="button" id="local-increase">+</span>
         </div>
     </div>
-    <div id="visitor-container" class="score-container">
+    <div class="score-container" id="visitor-container">
         <div class="score" id="visitor-score">0</div>
-        <div class="score-label">Visitante</div>
+        <div class="score-label" id="visitor-label">Visitante</div>
         <div class="buttons">
             <span class="button" id="visitor-decrease">-</span>
             <span class="button" id="visitor-increase">+</span>
@@ -79,15 +127,27 @@
     </div>
 
     <script>
+        const localContainer = document.getElementById('local-container');
+        const visitorContainer = document.getElementById('visitor-container');
         const localScoreElement = document.getElementById('local-score');
         const visitorScoreElement = document.getElementById('visitor-score');
         const localIncreaseButton = document.getElementById('local-increase');
         const localDecreaseButton = document.getElementById('local-decrease');
         const visitorIncreaseButton = document.getElementById('visitor-increase');
         const visitorDecreaseButton = document.getElementById('visitor-decrease');
+        const changeSetButton = document.getElementById('change-set');
+        const customizeButton = document.getElementById('customize');
+        const setTimerElement = document.getElementById('set-timer');
+        const localLabelElement = document.getElementById('local-label');
+        const visitorLabelElement = document.getElementById('visitor-label');
+        const changeLayoutButton = document.getElementById('change-layout');
 
         let localScore = 0;
         let visitorScore = 0;
+        let setNumber = 1;
+        let setTimer = 0;
+        let timerInterval;
+        let isHorizontal = true;
 
         // Función para actualizar el marcador local
         function updateLocalScore() {
@@ -100,6 +160,62 @@
             visitorScore++;
             visitorScoreElement.textContent = visitorScore;
         }
+
+        // Función para cambiar de set
+        function changeSet() {
+            // Guardar resultado actual en una tabla (puedes hacerlo según tus necesidades)
+            console.log(`Set ${setNumber}: ${localScore} - ${visitorScore}`);
+
+            // Reiniciar marcadores y setear número del set
+            localScore = 0;
+            visitorScore = 0;
+            localScoreElement.textContent = localScore;
+            visitorScoreElement.textContent = visitorScore;
+            setNumber++;
+
+            // Reiniciar temporizador
+            setTimer = 0;
+            setTimerElement.textContent = `Tiempo de Set: ${setTimer} minutos`;
+            clearInterval(timerInterval);
+
+            // Activar nuevo temporizador
+            startTimer();
+
+            // Alternar disposición de los marcadores si están en modo automático
+            if (!isAutomaticLayout) {
+                toggleScoreLayout();
+            }
+        }
+
+        // Función para iniciar un temporizador
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                setTimer++;
+                setTimerElement.textContent = `Tiempo de Set: ${setTimer} minutos`;
+            }, 60000); // Actualizar cada 60 segundos
+        }
+
+        // Función para alternar disposición de los marcadores
+        function toggleScoreLayout() {
+            if (isHorizontal) {
+                localContainer.style.order = 2;
+                visitorContainer.style.order = 1;
+            } else {
+                localContainer.style.order = 1;
+                visitorContainer.style.order = 2;
+            }
+
+            isHorizontal = !isHorizontal;
+        }
+
+        // Variable para controlar si la disposición es automática o no
+        let isAutomaticLayout = true;
+
+        // Event listener para el botón de cambio de disposición
+        changeLayoutButton.addEventListener('click', () => {
+            isAutomaticLayout = false; // Desactivar la disposición automática
+            toggleScoreLayout(); // Alternar disposición manualmente
+        });
 
         // Event listeners para los botones
         localIncreaseButton.addEventListener('click', updateLocalScore);
@@ -116,6 +232,23 @@
                 visitorScore--;
                 visitorScoreElement.textContent = visitorScore;
             }
+        });
+
+        // Event listener para el botón de cambio de set
+        changeSetButton.addEventListener('click', changeSet);
+
+        // Event listener para el botón de personalización
+        customizeButton.addEventListener('click', () => {
+            const localName = prompt('Nombre del equipo local:');
+            const visitorName = prompt('Nombre del equipo visitante:');
+            const localColor = prompt('Color de fondo para el equipo local (ejemplo: blue):');
+            const visitorColor = prompt('Color de fondo para el equipo visitante (ejemplo: red):');
+
+            // Actualizar etiquetas y colores
+            localLabelElement.textContent = localName || 'Local';
+            visitorLabelElement.textContent = visitorName || 'Visitante';
+            localContainer.style.backgroundColor = localColor || 'blue';
+            visitorContainer.style.backgroundColor = visitorColor || 'red';
         });
     </script>
 </body>
