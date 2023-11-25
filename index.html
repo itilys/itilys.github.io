@@ -16,7 +16,7 @@
             margin: 0;
         }
         .score-container {
-            width: 50%;
+            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -104,7 +104,7 @@
 </head>
 <body>
     <div class="menu-bar">
-        <div class="menu-button" id="change-set">Cambiar de Set</div>
+        <div class="menu-button" id="change-set">Nuevo Set</div>
         <div class="timer" id="set-timer">Tiempo de Set: 0 minutos</div>
         <div class="menu-button customize-button" id="customize">Personalizar</div>
         <div class="menu-button layout-button" id="change-layout">Cambiar Disposición</div>
@@ -191,7 +191,7 @@
         function startTimer() {
             timerInterval = setInterval(() => {
                 setTimer++;
-                setTimerElement.textContent = `Tiempo de Set: ${setTimer} minutos`;
+                setTimerElement.textContent = `Duración: ${setTimer} minutos`;
             }, 60000); // Actualizar cada 60 segundos
         }
 
